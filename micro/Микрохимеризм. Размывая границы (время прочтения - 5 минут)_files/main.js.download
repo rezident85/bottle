@@ -1,0 +1,591 @@
+$(document).ready(function () {
+	$num_lisener = 2;
+	
+	$('body').on('click', '.add_student', function(e) {
+		
+		$templ = $('.more-users-template').html();
+				
+		$templ = $templ.replace(/{num_lisener}/g, $num_lisener++);
+		
+		$(this).closest('.more-users').append($templ);
+			
+		$('select[data-id="' + $num_lisener + '"]').select2({
+			minimumResultsForSearch: Infinity
+		});
+		
+            $(".vertical-container").each(function (index, domEle) {
+                //var textWidth = $('.text-width', this).outerWidth();
+                var containerHeight = $(this).height();
+                $(".vertical-txt", this).css("min-width", containerHeight);
+                $(this).css("min-height", containerHeight);
+            });
+			
+			update_liseners();
+		
+	});
+	
+	$('body').on('click', '.delete_student', function(e) {
+		
+		$(this).closest('.refresher_courses_user').remove();
+		
+		$num_lisener = $num_lisener - 1;
+		
+		update_liseners();
+		
+	});
+	
+    $('body').on('click', '.absolute.absolute-top', function(e){
+        var pdiv = $(this).closest('.refresher_courses_user');
+		$p = pdiv.prev();
+		
+		var autoHeight = $p.height();
+		
+		$p.animate({ opacity: 0, height: 0 }, 200, function() {
+			
+			pdiv.insertBefore($p);
+
+			$p.animate({ opacity: 1, height: autoHeight }, 200, function() {
+				
+				update_liseners();
+				
+			});
+		});
+        return false
+    });
+    $('body').on('click', '.absolute.absolute-bottom', function(e){
+        var pdiv = $(this).closest('.refresher_courses_user');
+		$n = pdiv.next();
+		
+		var autoHeight = $n.height();
+
+		$n.animate({ opacity: 0, height: 0 }, 200, function() {
+			
+			pdiv.insertAfter($n);
+
+			$n.animate({ opacity: 1, height: autoHeight }, 200, function() {
+				
+				update_liseners();
+				
+			});
+		});
+        return false
+    });
+	
+	function update_liseners() {
+		
+		$lis = $('.liseners.budjet .lisener_number');
+		
+		$lis.each(function( index ) {
+			$( this ).text('Слушатель №' + (index + 1));
+			$( this ).closest(".refresher_courses_user").find("input[name='SORT[]']").val(index + 1);
+		});
+		
+		
+		$lis2 = $('.liseners.budjet .refresher_courses_user');
+		
+		$lis2.each(function( index ) {
+			
+			if(index == 0 && $lis2.length > 1) {
+			
+				$(this).find('.right_res').show();
+				$(this).find('.delete_student').show();
+				
+			} else if ($lis2.length == 1) {
+			
+				$(this).find('.right_res').hide();
+				$(this).find('.delete_student').hide();
+				
+			}
+			
+		});
+		
+	}
+
+
+	//Klain popup show
+	if ($('#question_klein').length > 0) {
+		call_form('#question_klein');
+	}
+
+	//EventMapLoader
+	if ($('.event_map #map').length) eventMapReloader();
+	
+    //tabs 
+    if ($('#tabs').length > 0) {
+        var myTabs = tabs({
+            el: '#tabs',
+            tabNavigationLinks: '.c-tabs-nav__link',
+            tabContentContainers: '.c-tab'
+        });
+        myTabs.init();
+    }
+    // slick slider
+    $('.slider').slick({
+        dots: true,
+        arrows: true,
+        infinite: true,
+        speed: 300,
+		autoplay: true,
+		autoplaySpeed: 4000,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        nextArrow: '<div class="next_arrow"</div>',
+        prevArrow: '<div class="prev_arrow"</div>',
+        responsive: [
+            {
+                breakpoint: 450,
+                settings: {
+                    arrows: false
+                }
+    },
+            ]
+    });
+    //    resourse slider
+    $('.resourse_slider').slick({
+        arrows: true,
+		dots: false,
+        infinite: true,
+        speed: 300,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        nextArrow: '<div class="next_arrow"</div>',
+        prevArrow: '<div class="prev_arrow"</div>',
+        responsive: [
+            {
+                breakpoint: 1170,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                }
+    },
+            {
+                breakpoint: 992,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                }
+    },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                }
+    },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+    }
+                        ]
+    });
+    //    fixed slider
+    $('.fixed_slider').slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+		autoplay: true,
+		autoplaySpeed: 4000,
+        speed: 300,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        nextArrow: '<div class="next_arrow"</div>',
+        prevArrow: '<div class="prev_arrow"</div>'
+    });
+    $('.slider-for').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        fade: true,
+		adaptiveHeight: true,
+        asNavFor: '.slider-nav',
+        nextArrow: '<div class="next_arrow"</div>',
+        prevArrow: '<div class="prev_arrow"</div>'
+    });
+    $('.slider-nav').slick({
+        centerMode: true,
+        centerPadding: '60px',
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        asNavFor: '.slider-for',
+        dots: false,
+        centerMode: true,
+        focusOnSelect: true
+    });
+    // simple scroll on page
+    if ($('body').hasClass('fronta')) {
+        $('a[href*=#]').click(function (event) {
+            // event.preventDefault();
+            event.preventDefault();
+            var target = $(this.hash);
+            var product = $(target).offset().top - 0;
+            $('html, body').animate({
+                scrollTop: product
+            }, 1000);
+            return false;
+        });
+    }
+    //    modal
+    
+    $('.box-close.one, .overlay').click(function (e) {
+        e.preventDefault();
+        $('.nonebox').animate({
+            'top': '-13500px'
+        }, 500, function () {
+            $('.overlay').fadeOut('fast');
+        });
+    });
+//    students modal
+     $('.show_students').click(function (e) {
+        e.preventDefault();
+        let current = $(this).closest('.th_item').find('.students_pop_up');
+        current.animate({
+            'top': '10%'
+        }, 500, function () {});
+    });
+    $('.box-close.one').click(function (e) {
+        e.preventDefault();
+        $('.students_pop_up').animate({
+            'top': '-13500px'
+        }, 500 );
+    });
+    
+    $('select:not(.nope)').select2({
+        minimumResultsForSearch: Infinity
+    });
+    //    slim menu
+    $('#navigation').slimmenu({
+        resizeWidth: '992',
+        collapserTitle: '<p>МЕНЮ</p>',  
+        animSpeed: 'medium',
+        easingEffect: null,
+        indentChildren: false,
+        childrenIndenter: '&nbsp;'
+    });
+    $('.menu-collapser p').click(function () {
+        $('#navigation').toggle("slow");
+    });
+    //        right sidebar
+    var $sticky = $('#fixed');
+    var $stickyrStopper = $('footer');
+    if (!!$sticky.offset()) { // make sure ".sticky" element exists
+
+        var generalSidebarHeight = $sticky.innerHeight();
+        var stickyTop = $sticky.offset().top;
+        //var stickOffset = 124;
+		var stickOffset;
+		if (navigator.appName == 'Microsoft Internet Explorer' ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv:11/)) || (typeof $.browser !== "undefined" && $.browser.msie == 1)) 
+			{
+			  stickOffset = 70;
+			}
+        else{ stickOffset = 124; }
+        var stickyStopperPosition = $stickyrStopper.offset().top;
+        var stopPoint = stickyStopperPosition - generalSidebarHeight - stickOffset;
+        var diff = stopPoint + stickOffset;
+        $(window).scroll(function () { // scroll event
+            var windowTop = $(window).scrollTop(); // returns number
+
+/*console.log(stickyTop + " " + windowTop + " " + stickOffset);
+            if (stickyTop < windowTop + stickOffset) {*/
+            if (stickyTop < windowTop) {
+                $sticky.css({
+                    position: 'fixed',
+                    top: 0,
+                    right: -18,
+                    maxWidth: 337,
+                    overflow: 'auto'
+                });
+
+            }
+            //            else if (stopPoint < windowTop) {
+            //                $sticky.css({
+            //                    position: 'absolute',
+            //                    top: diff
+            //                });
+            //            } 
+            else {
+                $sticky.css({
+                    position: 'absolute',
+                    top: 'initial',
+                    right: 0,
+                    maxWidth: 318,
+                    overflow: 'hidden'
+                });
+            }
+        });
+
+    }
+    //    modal
+    $('.box-close.one, .overlay').click(function (e) {
+        e.preventDefault();
+        $('.nonebox').animate({
+            'top': '-13500px'
+        }, 500, function () {
+            $('.overlay').fadeOut();
+        });
+    });
+    //        about more
+    $('.about_site').click(function () {
+        $('#about').toggle();
+    });
+    // RadioButton
+    $('.radioblock').find('.radio').each(function () {
+        $(this).click(function () {
+            // Заносим текст из нажатого дива в переменную
+            var valueRadio = $(this).html();
+			//alert(valueRadio); 
+            // Находим любой активный переключатель и убираем активность
+            $(this).parent().find('.radio').removeClass('active');
+            // Нажатому диву добавляем активность
+            $(this).addClass('active');
+            // Заносим значение объявленной переменной в атрибут скрытого инпута
+            //$(this).parent().find('input').val(valueRadio);
+			//$(this).html();
+        });
+
+    });
+    // Checkbox
+    // Отслеживаем событие клика по диву с классом check
+    $('.checkboxes').find('.check').click(function () {
+        // Пишем условие: если вложенный в див чекбокс отмечен
+        if ($(this).find('input').prop('checked')) {
+            // то снимаем активность с дива
+            $(this).removeClass('active');
+            // и удаляем атрибут checked (делаем чекбокс не отмеченным)
+            $(this).find('input').prop('checked', false).removeAttr('checked');
+
+            // если же чекбокс не отмечен, то
+        } else {
+            // добавляем класс активности диву
+            $(this).addClass('active');
+            // добавляем атрибут checked чекбоксу
+            $(this).find('input').prop('checked', true).attr('checked');
+        }
+    });
+    // Скрытие пустых элементов
+    $(".calendar_counter div").each(function(){
+        if( $.trim($(this).text()) == "" ){
+           $(this).hide();
+        }
+      });
+	  
+     $('.hidden_event p').click(function () {
+		var usoftCalendarWindow = $(this).parent('.hidden_event').children('.calendar_list');
+        $(usoftCalendarWindow).hasClass('active') ? $(usoftCalendarWindow).removeClass('active'): $(usoftCalendarWindow).addClass('active');
+    });
+
+     $('.calendar_counter').click(function () {
+		var usoftCalendarWindow = $(this).parent('div').find('.calendar_list');
+        $(usoftCalendarWindow).hasClass('active') ? $(usoftCalendarWindow).removeClass('active'): $(usoftCalendarWindow).addClass('active');
+    });
+
+	
+    $('.faq_page .main_content ul li > p').click(function(){
+        $('.faq_page .main_content ul li div.chavo span').hide('slow');
+        $(this).hasClass('active') ?  $(this).removeClass('active') :  $(this).addClass('active');
+        var element = $(this).closest('li').find('div.chavo p');
+        element.hasClass('active') ? element.removeClass('active') : element.addClass('active');
+    });
+    $('.faq_page .main_content ul li div.chavo p').click(function(e){
+        e.preventDefault();
+        $(this).closest('div.chavo').find('span').toggle('fast');
+    });
+    
+//    Календарь на главной
+/*	function getCalendarDay(day){
+		//var calendarItemNumber = obj.text() * 1;
+		var calendarItemNumber = day * 1;
+		alert(calendarItemNumber);
+		var openItem = $('[data-id-item="'+ calendarItemNumber + '"]');
+		openItem.toggle('slow');
+	}*/
+/*    if($('.front-page').length > 0){
+        $('.calendar_day .event').click(function(){
+            var calendarItemNumber = $(this).text() * 1;
+			alert(calendarItemNumber);
+            var openItem = $('[data-id-item="'+ calendarItemNumber + '"]');
+            openItem.toggle();
+        });
+    }*/
+//    Подсказка
+    var windowWidth = $(window).width();
+    if(windowWidth > 768){
+    $('.info').hover(function(){
+            var title=$(this).attr('title');
+            $(this).data('tipText',title).removeAttr('title');
+            $('<p class="tooltip"></p>').text(title).appendTo('body').fadeIn('slow');
+        },
+        function(){
+            $(this).attr('title',$(this).data('tipText'));
+            $('.tooltip').remove();
+        })
+                .mousemove(function(e){
+                var mousex=e.pageX+20;
+                var mousey=e.pageY+10 - 130;
+                $('.tooltip').css({top:mousey,left:mousex})
+                });
+    }
+    else{
+            $('.info').hover(function(){
+            var title=$(this).attr('title');
+            $(this).data('tipText',title).removeAttr('title');
+            $('<p class="tooltip"></p>').text(title).appendTo('body').fadeIn('slow');
+        },
+        function(){
+            $(this).attr('title',$(this).data('tipText'));
+            $('.tooltip').remove();
+        })
+                .mousemove(function(e){
+                var mousex= 20;
+                var mousey=e.pageY+10 - 130;
+                $('.tooltip').css({top:mousey,left:mousex})
+                });
+    }        
+
+//    iteractive map
+    $('.interactive_map_object div').click(function(){
+        $('.interactive_map_object div').removeClass('active');
+        $(this).hasClass('active') ? $(this).removeClass('active') : $(this).addClass('active');
+		
+		//Usoft
+		var cityID = $(this).attr('id').replace('city-id-', '');
+		$('#prop_city').val(cityID).trigger('change'); 
+		//alert(current.val());
+		//current.selected = true;//attr("selected", "selected");
+		
+    });
+//    pop_up interactive map
+/*    $('.prop_icons > div').hover(function(e){
+//        var mousex=e.pageX - 1037;
+//        var mousey=e.pageY - 2154;
+        if(windowWidth > 1200){
+            var mousex= -157;
+            var mousey= 86;
+            $('.prop_pop_up').hide();
+            var object = $(this).find('.prop_pop_up');
+            object.css({bottom:mousey,left:mousex, display: 'block'})
+        }
+        else if((windowWidth < 450)){
+            var mousex= 0;
+            var mousey= 182;
+            $('.prop_pop_up').hide();
+            var object = $(this).find('.prop_pop_up');
+            object.css({top:mousey,left:mousex, display: 'block'})
+        }
+        else{
+            var mousex= 0;
+            var mousey= 90;
+            $('.prop_pop_up').hide();
+            var object = $(this).find('.prop_pop_up');
+            object.css({bottom:mousey,left:mousex, display: 'block'})
+        }
+        
+	});
+*/
+//    pop_up interactive map
+    if(windowWidth > 1200){
+        $('.prop_icons > div').hover(function(e){
+                var mousex= -157;
+                var mousey= 86;
+                $('.prop_pop_up').hide();
+                var object = $(this).find('.prop_pop_up');
+                object.css({bottom:mousey,left:mousex, display: 'block'})
+        });
+    }
+    else{
+        $('.prop_icons > div').hover(function(){
+            var title=$(this).find('.prop_pop_up').html();
+            $(this).data('tipText',title).removeAttr('title');
+            $('<div id="prop_pop_up" class="prop_pop_up"></div>').appendTo('body').fadeIn('slow');
+            $('#prop_pop_up').html(title);
+        },
+        function(){
+            $('#prop_pop_up').remove();
+        })
+                .mousemove(function(e){
+                var mousex= 10;
+                var mousey=e.pageY+10 - 110;
+                $('#prop_pop_up').css({top:mousey,left:mousex})
+                });
+    }
+	
+	//Scrolling top
+	$(window).scroll(function() {
+		if($(this).scrollTop() > 600) {
+			$('#goTop').fadeIn();
+		} else {
+			$('#goTop').fadeOut();
+		}
+	});
+});
+
+function call_form(params) {
+    $('#overlay').show();
+//	$(params).css('max-width', $(params).width()+ 'px');
+	
+	$(params).css('left', ($(window).width()-$(params).width())/2+ 'px');
+	if (params=='#question_klein') {
+		//$(params).css({'height': $(params).height()});//Such a nonsence but needs to be here!
+		$(params).css({'max-height': ($(window).height() - 100) + 'px'});
+	}
+    //$(params).css('height', ($(window).height()-200 + 'px'));
+    $(params).css('top', ($(window).height()-$(params).height())/2+ 'px');
+    //$(params).css('display', 'block');
+}
+
+function call_form_2(params) {
+	jQuery('#register').animate({
+		'top': '-13500px'
+	}, 200);
+	jQuery(params).css('left', (jQuery(window).width() - jQuery(params).width()) / 2 + 'px');
+	jQuery(params).css('top', (jQuery(window).height() - jQuery(params).height()) / 2 + 'px');
+}
+
+//Institution selector
+function TopInstitutionChange(id){
+	var optionSelected = $(id).prop('selected', true);
+	var subdomain = optionSelected.val();
+	if (subdomain == "") var reference =  "http://" + mainServerName;//Variable set up in Admin part and header.php
+	else var reference =  "http://" + subdomain + "." + mainServerName;
+	window.location.href = reference;
+}
+
+var ajaxContentLoading = false;
+
+//Load content on button click
+function getMoreContentAjax($object, $namespace){//$object - press button, $namespace = is the class of the place content to put in. Be sure 'Modern' pagenavigation is set.
+	var ajaxContentHref = $object.find('a.modern-page-next').attr('href');
+	if (ajaxContentHref == undefined) return;
+	//alert(ajaxContentHref);
+	ajaxContentLoading = true;
+	$.get(ajaxContentHref, {is_ajax: 'y'}, function(data){
+		if (data) {
+			$object.remove();
+			$($namespace).append(data);
+			Likeit.init();
+		}
+		ajaxContentLoading = false;
+	});
+}
+
+function LanguageChange(){
+	var langSelector = $('#lang option:selected').val();
+	var langHref = $('div.lang_choice').attr("mainsite");
+	if (langSelector != 'rus') langHref = 'https://translate.google.ru/translate?hl=ru&sl=ru&tl=en&u=http%3A%2F%2F' + langHref;
+	window.location.replace(langHref);
+}
+
+function goTop(){
+	$('body,html').animate({scrollTop:0},800);
+}
+
+//Mainpage ProfMap Loading
+/*$(document).ready(function(){
+	if ($('#wrapper').find('.prop_map')) {
+		$.post('/profmap/index.php', {'is_ajax':'y'}, function(data){
+			$('.prop_map').html(data);
+		});
+	}
+});*/

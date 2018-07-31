@@ -1,0 +1,161 @@
+$(document).ready(function() {
+
+    // Форма авторизации на сайте
+    $('#login_form').submit(function() { 
+        var form = $(this);
+        var urlPath = document.location.pathname;
+
+        $.ajax({
+            type: 'POST',
+			async:false,
+            url: '/ajax/ajax.autorize.php',
+            dataType: 'json',
+            data: form.serialize(),
+            success: function(data) {
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    location="/cabinet/";
+                }
+            },
+            error:  function(xhr, str){
+            }
+        });
+    });
+
+    // Форма восстановления пароля на сайте
+    $('#form_password_recovery').submit(function() {
+        var form = $(this);
+
+        $('#form_register_pop_up.nonebox').css({'top': '-1100px'});
+        call_form('#form_ok_pop_up');
+
+        $.ajax({
+            type: 'POST',
+            url: '/ajax/ajax.password.recovery.php',
+            dataType: 'json',
+            data: form.serialize(),
+            success: function(data) {
+
+                if (data.error) {
+
+                } else {
+
+                }
+            },
+            error:  function(xhr, str){
+            }
+        });
+    });
+
+    // Форма регистрации на сайте
+    $('#register_form_2').submit(function() {
+
+        var form = $(this);
+
+        $.ajax({
+            type: 'POST',
+            url: '/ajax/ajax.registration.php',
+            dataType: 'json',
+            data: form.serialize(),
+            success: function(data) {
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    $('#register_email.nonebox').css({'top': '-1100px'});
+                    call_form('#register_form_2_ok');
+                }
+            },
+            error:  function(xhr, str){
+            }
+        });
+    });
+
+    // Пригласить на работу
+    $(document).on('click', '.invite-to-work', function() {
+
+        var obj = $(this);
+        var studentId = $(this).data('student-id');
+        var comment = obj.closest('.th_item').find('.comments');
+
+        if (!studentId) {
+            alert('Не выбран студент');
+            return false;
+        }
+
+        if (!comment.val()) {
+            //alert('Заполните пожалуйста поле "комментарий"');
+            //return false;
+        }
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                AJAX : 'SET_CLAIM',
+                STUDENT_ID: studentId,
+                COMMENT : comment.val()
+            },
+            success: function(data) {
+
+                $('.students_pop_up').css({'top': '-1100px'});
+                call_form('#form_ok_invite_to_work');
+            },
+            error:  function(xhr, str){
+
+            }
+        });
+
+    });
+
+    // Фильтр по профессиям
+    $('#professionSelectChange').on('change', function () {
+        var url = $(this).val(); // get selected value
+        if (url) { // require a URL
+            window.location = url; // redirect
+        }
+        return false;
+    });
+
+    // Показать текстовое поле для отправки приглашения на работу
+    $('.add_coment').click(function(){
+        $(this).closest('.th_item').find('.add_coment').fadeOut();
+        $(this).closest('.th_item').find('.add_coment_form').fadeIn();
+        return false;
+    });
+
+});
+
+function ExpertGet(id) {
+    var optionSelected = $(id).prop('selected', true);
+    var sectionId = optionSelected.val();
+
+    var obExperts = $('#expertSelect');
+
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {AJAX : 'GET_EXPERTS', SECTION_ID : sectionId},
+        success: function(data) {
+
+            obExperts.empty();
+
+            obExperts.append($('<option>', {
+                value: 0,
+                text: 'Любому эксперту'
+            }));
+
+            $.each(data.experts, function() {
+                obExperts.append($('<option>', {
+                    value: this.id,
+                    text: this.name
+                }));
+            });
+        },
+        error:  function(xhr, str){
+
+        }
+    });
+}

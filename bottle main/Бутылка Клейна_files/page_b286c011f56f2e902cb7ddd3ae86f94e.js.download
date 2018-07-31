@@ -1,0 +1,28 @@
+
+; /* Start:"a:4:{s:4:"full";s:110:"/bitrix/templates/.default/components/bitrix/news/Klain-main/bitrix/news.list/.default/script.js?1529669479659";s:6:"source";s:96:"/bitrix/templates/.default/components/bitrix/news/Klain-main/bitrix/news.list/.default/script.js";s:3:"min";s:0:"";s:3:"map";s:0:"";}"*/
+function KlainPopupHandler(obj){
+	if (!$('#agreement').prop("checked")) {
+		$('#nobutton').slideDown('slow');
+		return false;
+	}
+	form = $('form[name="'+obj+'"]');
+	var formData = form.serialize()  + '&web_form_submit=' + $('input[name="web_form_submit"]').val(); 
+	$.ajax({
+		'url' : '',
+		'method':'post',
+		'cache':false,
+		'data': formData,
+		'dataType':'text',
+		'async' : true,
+		'success':function(data, status){
+			$('#question_klein .Form-ajax-field').html(data);
+			/*if (data.indexOf('прин¤та') >= 0 ){
+				usoftShowRegistered();
+				$('#event_pop_up_1').hide();
+				call_form('#event_register_all');
+			}*/
+		}
+	});
+}
+/* End */
+;; /* /bitrix/templates/.default/components/bitrix/news/Klain-main/bitrix/news.list/.default/script.js?1529669479659*/
